@@ -33,17 +33,13 @@ module.exports = function(grunt) {
           flatten : false
         });
         grunt.verbose.writeflags(options, 'Options');
-        grunt.helper('instrument', grunt.helper('toFiles', files), options,
-            this.async());
+        grunt.helper('instrument', grunt.file.expandFiles(files), options, this
+            .async());
       });
 
   // ==========================================================================
   // HELPERS
   // ==========================================================================
-  grunt.registerHelper('toFiles', function(files) {
-    return grunt.file.expandFiles(files);
-  });
-
   grunt.registerHelper('instrument', function(files, options, done) {
     var instFlow = flow(function readFile(file) {
       fs.readFile(file, 'utf8', this.async({
