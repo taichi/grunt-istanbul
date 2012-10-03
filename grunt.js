@@ -2,6 +2,7 @@ module.exports = function(grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    clean : [ "build" ],
     test : {
       files : [ 'test/**/*_test.js' ]
     },
@@ -41,6 +42,7 @@ module.exports = function(grunt) {
 
   // Load local tasks.
   grunt.loadTasks('tasks');
+  grunt.loadNpmTasks('grunt-contrib-clean');
 
   // Default task.
   grunt.registerTask('default', 'lint test');
