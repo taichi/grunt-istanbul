@@ -18,6 +18,8 @@ module.exports = function(grunt) {
   grunt.util = grunt.util || grunt.utils;
 
   var Instrumenter = require('istanbul').Instrumenter;
+  var Collector = require('istanbul').Collector;
+  var Report = require('istanbul').Report;
   var helpers = require('grunt-contrib-lib').init(grunt);
 
   // ==========================================================================
@@ -26,8 +28,9 @@ module.exports = function(grunt) {
 
   grunt.registerTask('instrument', 'instruments a file or a directory tree',
       function(target) {
-        this.requiresConfig('instrument.files');
-        var files = grunt.config('instrument.files');
+        var key = 'instrument.files';
+        this.requiresConfig(key);
+        var files = grunt.config(key);
         var options = helpers.options(this, {
           basePath : 'build/instrument/',
           flatten : false
@@ -36,6 +39,31 @@ module.exports = function(grunt) {
         grunt.helper('instrument', grunt.file.expandFiles(files), options, this
             .async());
       });
+
+  grunt.registerTask('reloadTasks', 'override instrumented tasks', function(
+      target) {
+    var key = 'reloadTasks.rootPath';
+    this.requiresConfig(key);
+    var path = grunt.config(key);
+    grunt.loadTasks(path);
+  });
+
+  grunt.registerTask('coverreport', 'make coverage report', function(target) {
+    var options = helpers.options(this, {
+      type : 'html',
+      dir : 'build/reports/',
+      coverageVar : '__coverage__'
+    });
+    if (global[options.coverageVar]) {
+      var collector = new Collector();
+      collector.add(global[options.coverageVar]);
+      var reporter = Report.create(options.type, options);
+      reporter.writeReport(collector, true);
+      grunt.log.ok();
+    } else {
+      grunt.fail.fatal('No coverage information was collected');
+    }
+  });
 
   // ==========================================================================
   // HELPERS

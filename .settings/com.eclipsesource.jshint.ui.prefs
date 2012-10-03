@@ -1,4 +1,4 @@
 eclipse.preferences.version=1
 included=tasks//*.js\:test//*.js
-options=strict\: false, curly \: true,\r\n        eqeqeq \: true,\r\n        immed \: true,\r\n        latedef \: true,\r\n        newcap \: true,\r\n        noarg \: true,\r\n        sub \: true,\r\n        undef \: true,\r\n        boss \: true,\r\n        eqnull \: true,\r\n        node \: true,\r\n        es5 \: true
+options=\    laxbreak \: true,\r\n    laxcomma \: true,\r\nstrict\: false, curly \: true,\r\n        eqeqeq \: true,\r\n        immed \: true,\r\n        latedef \: true,\r\n        newcap \: true,\r\n        noarg \: true,\r\n        sub \: true,\r\n        undef \: true,\r\n        boss \: true,\r\n        eqnull \: true,\r\n        node \: true,\r\n        es5 \: true
 projectSpecificOptions=true

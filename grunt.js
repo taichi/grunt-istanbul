@@ -35,8 +35,11 @@ module.exports = function(grunt) {
     instrument : {
       files : '<config:lint.src>',
       options : {
-        flatten : true
+        basePath : 'build/instrument/'
       }
+    },
+    reloadTasks : {
+      rootPath : 'build/instrument/tasks'
     }
   });
 
@@ -44,7 +47,7 @@ module.exports = function(grunt) {
   grunt.loadTasks('tasks');
   grunt.loadNpmTasks('grunt-contrib-clean');
 
-  // Default task.
   grunt.registerTask('default', 'lint test');
+  grunt.registerTask('cover', 'clean instrument reloadTasks test coverreport');
 
 };
