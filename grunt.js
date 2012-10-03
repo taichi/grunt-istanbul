@@ -1,5 +1,7 @@
 module.exports = function(grunt) {
 
+  var dateFormat = require('dateformat');
+
   // Project configuration.
   grunt.initConfig({
     clean : [ "build" ],
@@ -40,6 +42,18 @@ module.exports = function(grunt) {
     },
     reloadTasks : {
       rootPath : 'build/instrument/tasks'
+    },
+    storeCoverage : {
+      options : {
+        dir : 'build/reports/' + dateFormat(new Date(), 'yyyymmdd-HHMMss')
+      }
+    },
+    makereport : {
+      src : 'build/reports/**/*.json',
+      options : {
+        type : 'lcov',
+        dir : '<config:storeCoverage.options.dir>'
+      }
     }
   });
 
@@ -48,6 +62,7 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-clean');
 
   grunt.registerTask('default', 'lint test');
-  grunt.registerTask('cover', 'clean instrument reloadTasks test coverreport');
+  grunt.registerTask('cover',
+      'clean instrument reloadTasks test storeCoverage makereport');
 
 };

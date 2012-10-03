@@ -14,9 +14,6 @@ module.exports = function(grunt) {
   var flow = require('nue').flow;
   var as = require('nue').as;
 
-  // TODO: ditch this when grunt v0.4 is released
-  grunt.util = grunt.util || grunt.utils;
-
   var Instrumenter = require('istanbul').Instrumenter;
   var Collector = require('istanbul').Collector;
   var Report = require('istanbul').Report;
@@ -36,8 +33,12 @@ module.exports = function(grunt) {
           flatten : false
         });
         grunt.verbose.writeflags(options, 'Options');
-        grunt.helper('instrument', grunt.file.expandFiles(files), options, this
-            .async());
+        var done = this.async();
+        grunt.helper('instrument', grunt.file.expandFiles(files), options,
+            function() {
+              grunt.log.ok();
+              done();
+            });
       });
 
   grunt.registerTask('reloadTasks', 'override instrumented tasks', function(
@@ -45,24 +46,48 @@ module.exports = function(grunt) {
     var key = 'reloadTasks.rootPath';
     this.requiresConfig(key);
     var path = grunt.config(key);
+    grunt.verbose.writeln('Tasks from ' + path);
     grunt.loadTasks(path);
+    grunt.log.ok();
   });
 
-  grunt.registerTask('coverreport', 'make coverage report', function(target) {
+  grunt.registerTask('storeCoverage', 'store coverage from global', function(
+      target) {
     var options = helpers.options(this, {
-      type : 'html',
       dir : 'build/reports/',
+      json : 'coverage.json',
       coverageVar : '__coverage__'
     });
+    grunt.verbose.writeflags(options, 'Options');
     if (global[options.coverageVar]) {
-      var collector = new Collector();
-      collector.add(global[options.coverageVar]);
-      var reporter = Report.create(options.type, options);
-      reporter.writeReport(collector, true);
-      grunt.log.ok();
+      var done = this.async();
+      flow(function write_json(cov) {
+        var json = path.resolve(options.dir, options.json);
+        grunt.file.mkdir(path.dirname(json));
+        fs.writeFile(json, JSON.stringify(cov), 'utf8', this.async(as(1)));
+      }, function end() {
+        if (this.err) {
+          grunt.fail.fatal(this.err);
+        } else {
+          grunt.log.ok();
+        }
+        done();
+      })(global[options.coverageVar]);
     } else {
       grunt.fail.fatal('No coverage information was collected');
     }
+  });
+
+  grunt.registerTask('makereport', 'make coverage report', function(target) {
+    var key = 'makereport.src';
+    this.requiresConfig(key);
+    var files = grunt.config(key);
+    var options = helpers.options(this, {
+      type : 'lcov',
+      dir : 'build/reports/'
+    });
+    grunt.helper('makereport', grunt.file.expandFiles(files), options, this
+        .async());
   });
 
   // ==========================================================================
@@ -106,4 +131,27 @@ module.exports = function(grunt) {
     }, done)(files);
   });
 
+  grunt.registerHelper('makereport', function(files, options, done) {
+    flow(function(filelist) {
+      this.asyncEach(filelist, function(file, group) {
+        grunt.verbose.writeln('read from ' + file);
+        fs.readFile(file, 'utf8', group.async(as(1)));
+      });
+    }, function report(list) {
+      var collector = new Collector();
+      list.forEach(function(json) {
+        collector.add(JSON.parse(json));
+      });
+      var reporter = Report.create(options.type, options);
+      reporter.writeReport(collector, true);
+      this.next();
+    }, function end() {
+      if (this.err) {
+        grunt.fail.fatal(this.err);
+      } else {
+        grunt.log.ok();
+      }
+      done();
+    })(files);
+  });
 };
