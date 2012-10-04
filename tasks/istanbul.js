@@ -14,9 +14,7 @@ module.exports = function(grunt) {
   var flow = require('nue').flow;
   var as = require('nue').as;
 
-  var Instrumenter = require('istanbul').Instrumenter;
-  var Collector = require('istanbul').Collector;
-  var Report = require('istanbul').Report;
+  var istanbul = require('istanbul');
   var helpers = require('grunt-contrib-lib').init(grunt);
 
   // ==========================================================================
@@ -33,12 +31,8 @@ module.exports = function(grunt) {
           flatten : false
         });
         grunt.verbose.writeflags(options, 'Options');
-        var done = this.async();
-        grunt.helper('instrument', grunt.file.expandFiles(files), options,
-            function() {
-              grunt.log.ok();
-              done();
-            });
+        grunt.helper('instrument', grunt.file.expandFiles(files), options, this
+            .async());
       });
 
   grunt.registerTask('reloadTasks', 'override instrumented tasks', function(
@@ -60,19 +54,8 @@ module.exports = function(grunt) {
     });
     grunt.verbose.writeflags(options, 'Options');
     if (global[options.coverageVar]) {
-      var done = this.async();
-      flow(function write_json(cov) {
-        var json = path.resolve(options.dir, options.json);
-        grunt.file.mkdir(path.dirname(json));
-        fs.writeFile(json, JSON.stringify(cov), 'utf8', this.async(as(1)));
-      }, function end() {
-        if (this.err) {
-          grunt.fail.fatal(this.err);
-        } else {
-          grunt.log.ok();
-        }
-        done();
-      })(global[options.coverageVar]);
+      grunt.helper('storeCoverage', global[options.coverageVar], options, this
+          .async());
     } else {
       grunt.fail.fatal('No coverage information was collected');
     }
@@ -101,25 +84,22 @@ module.exports = function(grunt) {
       }));
     }, function instrument(f) {
       grunt.verbose.writeln('instrument from ' + f.name);
-      var instrumenter = new Instrumenter(options);
+      var instrumenter = new istanbul.Instrumenter(options);
       instrumenter.instrument(f.code, f.name, this.async({
         name : f.name,
-        err : as(0),
         code : as(1)
       }));
     }, function write(result) {
-      if (result.err) {
-        this.endWith(result.err);
-      } else {
-        var out = path.join(options.basePath, options.flatten === true ? path
-            .basename(result.name) : result.name);
-        grunt.verbose.writeln('instrument to ' + out);
-        grunt.file.mkdir(path.dirname(out));
-        fs.writeFile(out, result.code, 'utf8', this.async(as(1)));
-      }
+      var out = path.join(options.basePath, options.flatten === true ? path
+          .basename(result.name) : result.name);
+      grunt.verbose.writeln('instrument to ' + out);
+      grunt.file.mkdir(path.dirname(out));
+      fs.writeFile(out, result.code, 'utf8', this.async(as(1)));
     }, function end() {
       if (this.err) {
         grunt.fail.fatal(this.err);
+      } else {
+        grunt.log.ok();
       }
       this.next();
     });
@@ -131,6 +111,21 @@ module.exports = function(grunt) {
     }, done)(files);
   });
 
+  grunt.registerHelper('storeCoverage', function(coverage, options, done) {
+    flow(function write_json(cov) {
+      var json = path.resolve(options.dir, options.json);
+      grunt.file.mkdir(path.dirname(json));
+      fs.writeFile(json, JSON.stringify(cov), 'utf8', this.async(as(1)));
+    }, function end() {
+      if (this.err) {
+        grunt.fail.fatal(this.err);
+      } else {
+        grunt.log.ok();
+      }
+      done();
+    })(coverage);
+  });
+
   grunt.registerHelper('makeReport', function(files, options, done) {
     flow(function(filelist) {
       this.asyncEach(filelist, function(file, group) {
@@ -138,11 +133,11 @@ module.exports = function(grunt) {
         fs.readFile(file, 'utf8', group.async(as(1)));
       });
     }, function report(list) {
-      var collector = new Collector();
+      var collector = new istanbul.Collector();
       list.forEach(function(json) {
         collector.add(JSON.parse(json));
       });
-      var reporter = Report.create(options.type, options);
+      var reporter = istanbul.Report.create(options.type, options);
       reporter.writeReport(collector, true);
       this.next();
     }, function end() {
