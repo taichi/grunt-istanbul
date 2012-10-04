@@ -48,7 +48,7 @@ module.exports = function(grunt) {
         dir : 'build/reports/' + dateFormat(new Date(), 'yyyymmdd-HHMMss')
       }
     },
-    makereport : {
+    makeReport : {
       src : 'build/reports/**/*.json',
       options : {
         type : 'lcov',
@@ -63,6 +63,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('default', 'lint test');
   grunt.registerTask('cover',
-      'clean instrument reloadTasks test storeCoverage makereport');
+      'clean instrument reloadTasks test storeCoverage makeReport');
 
 };

@@ -78,15 +78,15 @@ module.exports = function(grunt) {
     }
   });
 
-  grunt.registerTask('makereport', 'make coverage report', function(target) {
-    var key = 'makereport.src';
+  grunt.registerTask('makeReport', 'make coverage report', function(target) {
+    var key = 'makeReport.src';
     this.requiresConfig(key);
     var files = grunt.config(key);
     var options = helpers.options(this, {
       type : 'lcov',
       dir : 'build/reports/'
     });
-    grunt.helper('makereport', grunt.file.expandFiles(files), options, this
+    grunt.helper('makeReport', grunt.file.expandFiles(files), options, this
         .async());
   });
 
@@ -131,7 +131,7 @@ module.exports = function(grunt) {
     }, done)(files);
   });
 
-  grunt.registerHelper('makereport', function(files, options, done) {
+  grunt.registerHelper('makeReport', function(files, options, done) {
     flow(function(filelist) {
       this.asyncEach(filelist, function(file, group) {
         grunt.verbose.writeln('read from ' + file);
