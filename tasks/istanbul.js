@@ -69,6 +69,7 @@ module.exports = function(grunt) {
       type : 'lcov',
       dir : 'build/reports/'
     });
+    grunt.verbose.writeflags(options, 'Options');
     grunt.helper('makeReport', grunt.file.expandFiles(files), options, this
         .async());
   });
@@ -76,6 +77,15 @@ module.exports = function(grunt) {
   // ==========================================================================
   // HELPERS
   // ==========================================================================
+  function flowEnd(err, done) {
+    if (err) {
+      grunt.fail.fatal(err);
+    } else {
+      grunt.log.ok();
+    }
+    done();
+  }
+
   grunt.registerHelper('instrument', function(files, options, done) {
     var instFlow = flow(function readFile(file) {
       fs.readFile(file, 'utf8', this.async({
@@ -96,12 +106,7 @@ module.exports = function(grunt) {
       grunt.file.mkdir(path.dirname(out));
       fs.writeFile(out, result.code, 'utf8', this.async(as(1)));
     }, function end() {
-      if (this.err) {
-        grunt.fail.fatal(this.err);
-      } else {
-        grunt.log.ok();
-      }
-      this.next();
+      flowEnd(this.err, this.next.bind(this));
     });
 
     flow(function(filelist) {
@@ -116,13 +121,8 @@ module.exports = function(grunt) {
       var json = path.resolve(options.dir, options.json);
       grunt.file.mkdir(path.dirname(json));
       fs.writeFile(json, JSON.stringify(cov), 'utf8', this.async(as(1)));
-    }, function end() {
-      if (this.err) {
-        grunt.fail.fatal(this.err);
-      } else {
-        grunt.log.ok();
-      }
-      done();
+    }, function() {
+      flowEnd(this.err, done);
     })(coverage);
   });
 
@@ -140,13 +140,8 @@ module.exports = function(grunt) {
       var reporter = istanbul.Report.create(options.type, options);
       reporter.writeReport(collector, true);
       this.next();
-    }, function end() {
-      if (this.err) {
-        grunt.fail.fatal(this.err);
-      } else {
-        grunt.log.ok();
-      }
-      done();
+    }, function() {
+      flowEnd(this.err, done);
     })(files);
   });
 };
