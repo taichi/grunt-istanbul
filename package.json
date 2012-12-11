@@ -31,15 +31,15 @@
   },
   "dependencies": {
     "grunt-contrib-lib" : "0.3.0",
-    "istanbul" : "0.1.5",
-    "nue": "*"
+    "istanbul" : "0.1.25",
+    "nue": "0.7.0dev"
   },
   "devDependencies": {
-    "grunt": "< 0.4.0",
+    "grunt": "0.3.18a",
     "grunt-contrib-clean" : "0.3.0",
-    "mkdirp": ">=0.3.4",
-    "rimraf": "*",
-    "dateformat" : "*"
+    "mkdirp": "0.3.4",
+    "rimraf": "2.0.2",
+    "dateformat" : "1.0.3-1.2.3"
   },
   "keywords": [
     "gruntplugin","coverage","code coverage", "JS code coverage", "JS coverage","istanbul"
