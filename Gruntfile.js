@@ -2,22 +2,21 @@ module.exports = function(grunt) {
 
   var dateFormat = require('dateformat');
 
-  // Project configuration.
+  var tests = 'test/**/*_test.js';
+  var tasks = 'tasks/**/*.js';
+  var reportDir = 'build/reports/' + dateFormat(new Date(), 'yyyymmdd-HHMMss');
+
   grunt.initConfig({
-    clean : [ "build" ],
-    test : {
-      files : [ 'test/**/*_test.js' ]
-    },
-    lint : {
-      src : 'tasks/**/*.js',
-      grunt : 'grunt.js',
-      test : '<config:test.files>'
+    clean : [ 'build' ],
+    nodeunit : {
+      files : [ tests ]
     },
     watch : {
-      files : [ '<config:lint.src>', '<config:test.files>' ],
+      files : [ tasks, tests ],
       tasks : 'default'
     },
     jshint : {
+      files : [ 'Gruntfile.js', tasks, tests ],
       options : {
         curly : true,
         eqeqeq : true,
@@ -35,7 +34,7 @@ module.exports = function(grunt) {
       globals : {}
     },
     instrument : {
-      files : '<config:lint.src>',
+      files : tasks,
       options : {
         basePath : 'build/instrument/'
       }
@@ -45,14 +44,14 @@ module.exports = function(grunt) {
     },
     storeCoverage : {
       options : {
-        dir : 'build/reports/' + dateFormat(new Date(), 'yyyymmdd-HHMMss')
+        dir : reportDir
       }
     },
     makeReport : {
       src : 'build/reports/**/*.json',
       options : {
         type : 'lcov',
-        dir : '<config:storeCoverage.options.dir>'
+        dir : reportDir
       }
     }
   });
@@ -60,9 +59,12 @@ module.exports = function(grunt) {
   // Load local tasks.
   grunt.loadTasks('tasks');
   grunt.loadNpmTasks('grunt-contrib-clean');
+  grunt.loadNpmTasks('grunt-contrib-jshint');
+  grunt.loadNpmTasks('grunt-contrib-nodeunit');
 
-  grunt.registerTask('default', 'lint test');
-  grunt.registerTask('cover',
-      'clean instrument reloadTasks test storeCoverage makeReport');
+  grunt.registerTask('test', 'nodeunit');
+  grunt.registerTask('default', [ 'jshint', 'test' ]);
+  grunt.registerTask('cover', [ 'clean', 'instrument', 'reloadTasks', 'test',
+      'storeCoverage', 'makeReport' ]);
 
 };

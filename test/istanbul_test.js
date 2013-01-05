@@ -7,6 +7,8 @@ var as = require('nue').as;
 var _h = require('./testHelpers');
 var throwOrDone = _h.throwOrDone;
 var output = _h.fixtures('output');
+var grunt = require('grunt');
+var helper = require('../tasks/helpers').init(grunt);
 
 /*
  * ======== A Handy Little Nodeunit Reference ========
@@ -24,7 +26,7 @@ exports['istanbul'] = {
   'instrument' : function(test) {
     test.expect(3);
     var fixtures = _h.fixtures('instrument');
-    grunt.helper('instrument', [ fixtures('hello.js') ], {
+    helper.instrument([ fixtures('hello.js') ], {
       basePath : output(),
       flatten : true
     }, flow(function read() {
@@ -41,7 +43,7 @@ exports['istanbul'] = {
     test.expect(1);
     var fixtures = _h.fixtures('storeCoverage');
     var cov = JSON.parse('{ "aaa":1, "bbb":2, "ccc":3 }');
-    grunt.helper('storeCoverage', cov, {
+    helper.storeCoverage(cov, {
       dir : output(),
       json : 'coverage.json'
     }, flow(function read() {
@@ -54,7 +56,7 @@ exports['istanbul'] = {
   'makeReport' : function(test) {
     test.expect(2);
     var fixtures = _h.fixtures('makeReport');
-    grunt.helper('makeReport', [ fixtures('coverage.json') ], {
+    helper.makeReport([ fixtures('coverage.json') ], {
       type : 'lcov',
       dir : output()
     }, flow(function read() {

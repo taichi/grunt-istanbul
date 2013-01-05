@@ -24,19 +24,20 @@
   "main": "grunt.js",
   "bin": "bin/grunt-istanbul",
   "engines": {
-    "node": "*"
+    "node": ">= 0.8.14"
   },
   "scripts": {
     "test": "grunt test"
   },
   "dependencies": {
-    "grunt-contrib-lib" : "0.3.0",
-    "istanbul" : "0.1.25",
+    "grunt": ">= 0.4.0rc1",
+    "istanbul" : "0.1.26",
     "nue": "0.7.0dev"
   },
   "devDependencies": {
-    "grunt": "0.3.18a",
-    "grunt-contrib-clean" : "0.3.0",
+    "grunt-contrib-jshint": ">= 0.1.0",
+    "grunt-contrib-nodeunit": ">= 0.1.1",
+    "grunt-contrib-clean" : "0.4.0a",
     "mkdirp": "0.3.4",
     "rimraf": "2.0.2",
     "dateformat" : "1.0.3-1.2.3"
