@@ -20,7 +20,7 @@ module.exports = function(grunt) {
               flatten : false
             });
             grunt.verbose.writeflags(options, 'Options');
-            helper.instrument(grunt.file.expandFiles(files), options, this
+            helper.instrument(grunt.file.expand(files), options, this
                 .async());
           });
 
@@ -58,6 +58,6 @@ module.exports = function(grunt) {
       dir : 'build/reports/'
     });
     grunt.verbose.writeflags(options, 'Options');
-    helper.makeReport(grunt.file.expandFiles(files), options, this.async());
+    helper.makeReport(grunt.file.expand(files), options, this.async());
   });
 };
