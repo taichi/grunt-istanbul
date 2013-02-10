@@ -54,6 +54,7 @@ module.exports = function(grunt) {
     this.requiresConfig(key);
     var files = grunt.config(key);
     var options = this.options({
+      reporters : {},
       type : 'lcov',
       dir : 'build/reports/'
     });

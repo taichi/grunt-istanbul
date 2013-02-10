@@ -1,3 +1,5 @@
+'use strict';
+
 var grunt = require('grunt');
 var fs = require('fs');
 var rimraf = require('rimraf');
@@ -7,7 +9,7 @@ var as = require('nue').as;
 var _h = require('./testHelpers');
 var throwOrDone = _h.throwOrDone;
 var output = _h.fixtures('output');
-var grunt = require('grunt');
+var istanbul = require('istanbul');
 var helper = require('../tasks/helpers').init(grunt);
 
 /*
@@ -65,6 +67,43 @@ exports['istanbul'] = {
     }, function assert(lcov, html) {
       test.ok(lcov);
       test.ok(html);
+      this.next();
+    }, throwOrDone(test.done.bind(test))));
+  },
+  'makeReport.reporters' : function(test) {
+    test.expect(4);
+    var fixtures = _h.fixtures('makeReport');
+
+    var textNotWritten = true;
+    var TextReport = istanbul.Report.create('text').constructor;
+    var writeTextReport = TextReport.prototype.writeReport;
+    TextReport.prototype.writeReport = function() {
+      textNotWritten = false;
+    };
+
+    var textSummaryWritten = false;
+    var TextSummaryReport = istanbul.Report.create('text-summary').constructor;
+    var writeTextSummaryReport = TextSummaryReport.prototype.writeReport;
+    TextSummaryReport.prototype.writeReport = function() {
+      textSummaryWritten = true;
+    };
+
+    helper.makeReport([ fixtures('coverage.json') ], {
+      reporters : {
+        lcov : {dir : output()},
+        text : false,
+        'text-summary' : true
+      }
+    }, flow(function read() {
+      fs.readFile(output('lcov.info'), 'utf8', this.async(as(1)));
+      fs.readFile(output('lcov-report/index.html'), 'utf8', this.async(as(1)));
+    }, function assert(lcov, html) {
+      TextReport.prototype.writeReport = writeTextReport;
+      TextSummaryReport.prototype.writeReport = writeTextSummaryReport;
+      test.ok(lcov);
+      test.ok(html);
+      test.ok(textNotWritten);
+      test.ok(textSummaryWritten);
       this.next();
     }, throwOrDone(test.done.bind(test))));
   }

@@ -1,4 +1,6 @@
 exports.init = function(grunt) {
+  'use strict';
+
   var fs = require('fs');
   var path = require('path');
 
@@ -65,8 +67,20 @@ exports.init = function(grunt) {
         list.forEach(function(json) {
           collector.add(JSON.parse(json));
         });
-        var reporter = istanbul.Report.create(options.type, options);
-        reporter.writeReport(collector, true);
+        var reporters = options.reporters &&
+          typeof options.reporters === 'object' ? options.reporters : {};
+        var reporterTypes = Object.keys(reporters);
+        if (!reporterTypes.length) {
+          reporterTypes.push(options.type);
+          reporters = {};
+          reporters[options.type] = options;
+        }
+        reporterTypes.forEach(function(type) {
+          if (reporters[type]) {
+            var reporter = istanbul.Report.create(type, reporters[type]);
+            reporter.writeReport(collector, true);
+          }
+        });
         this.next();
       }, function() {
         flowEnd(this.err, done);

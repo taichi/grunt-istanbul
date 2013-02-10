@@ -1,4 +1,5 @@
 module.exports = function(grunt) {
+  'use strict';
 
   var dateFormat = require('dateformat');
 
