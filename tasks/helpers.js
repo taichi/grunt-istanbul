@@ -67,13 +67,33 @@ exports.init = function(grunt) {
         list.forEach(function(json) {
           collector.add(JSON.parse(json));
         });
+        
         var reporters = options.reporters &&
           typeof options.reporters === 'object' ? options.reporters : {};
         var reporterTypes = Object.keys(reporters);
-        if (!reporterTypes.length) {
-          reporterTypes.push(options.type);
-          reporters = {};
-          reporters[options.type] = options;
+        var appendReporter = function(type) {
+          if(!reporters[type]) {
+            reporterTypes.push(type);
+            reporters[type] = options;
+          }
+        };
+        if (reporterTypes.length < 1) {
+          appendReporter(options.type);
+        }
+        switch (options.print) {
+          case 'none':
+            // nothing.
+            break;
+          case 'detail':
+            appendReporter('text');
+            break;
+          case 'both':
+            appendReporter('text');
+            appendReporter('text-summary');
+            break;
+          default :
+            appendReporter('text-summary');
+            break;
         }
         reporterTypes.forEach(function(type) {
           if (reporters[type]) {

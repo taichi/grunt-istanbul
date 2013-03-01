@@ -60,7 +60,8 @@ exports['istanbul'] = {
     var fixtures = _h.fixtures('makeReport');
     helper.makeReport([ fixtures('coverage.json') ], {
       type : 'lcov',
-      dir : output()
+      dir : output(),
+      print : 'none'
     }, flow(function read() {
       fs.readFile(output('lcov.info'), 'utf8', this.async(as(1)));
       fs.readFile(output('lcov-report/index.html'), 'utf8', this.async(as(1)));
@@ -93,7 +94,8 @@ exports['istanbul'] = {
         lcov : {dir : output()},
         text : false,
         'text-summary' : true
-      }
+      },
+      print : 'none'
     }, flow(function read() {
       fs.readFile(output('lcov.info'), 'utf8', this.async(as(1)));
       fs.readFile(output('lcov-report/index.html'), 'utf8', this.async(as(1)));

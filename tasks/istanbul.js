@@ -56,7 +56,8 @@ module.exports = function(grunt) {
     var options = this.options({
       reporters : {},
       type : 'lcov',
-      dir : 'build/reports/'
+      dir : 'build/reports/',
+      print : 'none'
     });
     grunt.verbose.writeflags(options, 'Options');
     helper.makeReport(grunt.file.expand(files), options, this.async());
