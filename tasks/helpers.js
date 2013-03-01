@@ -17,6 +17,39 @@ exports.init = function(grunt) {
     }
     done();
   }
+  
+  function makeReporters(options) {
+    var result = [];
+    var reporters = options.reporters &&
+      typeof options.reporters === 'object' ? options.reporters : {};
+    Object.keys(reporters).forEach(function(n) {
+      if(reporters[n]) {
+        result.push({ type : n, options : reporters[n] });
+      }
+    });
+
+    var append = function(t) {
+      if(t && !reporters[t]) {
+        result.push({ type : t, options : options});
+        reporters[t] = true;
+      }
+    };
+
+    append(options.type);
+    
+    var mapping = {
+      'none' : [],
+      'detail': ['text'],
+      'both' : ['text', 'text-summary']
+    };
+    var a = mapping[options.print];
+    if(a) {
+      a.forEach(append);
+    } else {
+      append('text-summary');
+    }
+    return result;
+  }
 
   return {
     instrument : function(files, options, done) {
@@ -67,39 +100,9 @@ exports.init = function(grunt) {
         list.forEach(function(json) {
           collector.add(JSON.parse(json));
         });
-        
-        var reporters = options.reporters &&
-          typeof options.reporters === 'object' ? options.reporters : {};
-        var reporterTypes = Object.keys(reporters);
-        var appendReporter = function(type) {
-          if(!reporters[type]) {
-            reporterTypes.push(type);
-            reporters[type] = options;
-          }
-        };
-        if (reporterTypes.length < 1) {
-          appendReporter(options.type);
-        }
-        switch (options.print) {
-          case 'none':
-            // nothing.
-            break;
-          case 'detail':
-            appendReporter('text');
-            break;
-          case 'both':
-            appendReporter('text');
-            appendReporter('text-summary');
-            break;
-          default :
-            appendReporter('text-summary');
-            break;
-        }
-        reporterTypes.forEach(function(type) {
-          if (reporters[type]) {
-            var reporter = istanbul.Report.create(type, reporters[type]);
+        makeReporters(options).forEach(function(repoDef) {
+            var reporter = istanbul.Report.create(repoDef.type, repoDef.options);
             reporter.writeReport(collector, true);
-          }
         });
         this.next();
       }, function() {
