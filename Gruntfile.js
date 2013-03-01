@@ -52,7 +52,8 @@ module.exports = function(grunt) {
       src : 'build/reports/**/*.json',
       options : {
         type : 'lcov',
-        dir : reportDir
+        dir : reportDir,
+        print : 'detail'
       }
     }
   });
