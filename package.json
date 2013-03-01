@@ -1,7 +1,7 @@
 {
   "name": "grunt-istanbul",
   "description": "JavaScript codecoverage tool for Grunt",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "homepage": "https://github.com/taichi/grunt-istanbul",
   "author": {
     "name": "taichi",
@@ -30,17 +30,17 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "grunt": ">= 0.4.0rc5",
-    "istanbul" : "0.1.26",
+    "grunt": "~0.4.0",
+    "istanbul" : "~0.1.31",
     "nue": "0.7.0dev"
   },
   "devDependencies": {
-    "grunt-contrib-jshint": ">= 0.1.0",
-    "grunt-contrib-nodeunit": ">= 0.1.1",
-    "grunt-contrib-clean" : "0.4.0a",
-    "mkdirp": "0.3.4",
-    "rimraf": "2.0.2",
-    "dateformat" : "1.0.3-1.2.3"
+    "grunt-contrib-jshint": "~0.1.0",
+    "grunt-contrib-nodeunit": "~0.1.2",
+    "grunt-contrib-clean" : "~0.4.0a",
+    "mkdirp": "~0.3.4",
+    "rimraf": "~2.0.2",
+    "dateformat" : "~1.0.3-1.2.3"
   },
   "keywords": [
     "gruntplugin","coverage","code coverage", "JS code coverage", "JS coverage","istanbul"
