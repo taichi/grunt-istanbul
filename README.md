@@ -1,4 +1,4 @@
-# grunt-istanbul
+# grunt-istanbul [![Build Status](https://travis-ci.org/taichi/grunt-istanbul.png)](https://travis-ci.org/taichi/grunt-istanbul)
 
 JavaScript codecoverage tool for Grunt
 
