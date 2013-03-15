@@ -21,7 +21,7 @@
       "url": "https://github.com/taichi/grunt-istanbul/blob/master/LICENSE-MIT"
     }
   ],
-  "main": "grunt.js",
+  "main": "Gruntfile.js",
   "bin": "bin/grunt-istanbul",
   "engines": {
     "node": ">= 0.10.0"
