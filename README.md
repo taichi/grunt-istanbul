@@ -17,7 +17,7 @@ grunt.loadNpmTasks('grunt-istanbul');
 [getting_started]: https://github.com/cowboy/grunt/blob/master/docs/getting_started.md
 
 ## Documentation
-_(Coming soon)_
+see [Gruntfile.js](https://github.com/taichi/grunt-istanbul/blob/master/Gruntfile.js#69)
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [grunt][grunt].
