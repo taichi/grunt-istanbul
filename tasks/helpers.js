@@ -96,9 +96,6 @@ exports.init = function(grunt) {
          grunt.verbose.writeln('make a decision about instrumenting ' + i.name + ': ' + reinstrument);
          this.end({ name: i.name, instrument: reinstrument });
        }, function end(f) {
-         if (this.err) {
-           grunt.verbose.writeln('about to instrument?', this.err);
-         }
          if (f.instrument) this.exec(instFlow, { name : f.name }, this.async());
        });
 
