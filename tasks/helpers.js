@@ -17,7 +17,7 @@ exports.init = function(grunt) {
     }
     done();
   }
-  
+
   function makeReporters(options) {
     var result = [];
     var reporters = options.reporters &&
@@ -36,7 +36,7 @@ exports.init = function(grunt) {
     };
 
     append(options.type);
-    
+
     var mapping = {
       'none' : [],
       'detail': ['text'],
@@ -53,30 +53,58 @@ exports.init = function(grunt) {
 
   return {
     instrument : function(files, options, done) {
-      var instFlow = flow(function readFile(file) {
-        fs.readFile(file, 'utf8', this.async({
-          name : file,
-          code : as(1)
-        }));
-      }, function instrument(f) {
-        grunt.verbose.writeln('instrument from ' + f.name);
-        var instrumenter = new istanbul.Instrumenter(options);
-        instrumenter.instrument(f.code, f.name, this.async({
-          name : f.name,
-          code : as(1)
-        }));
-      }, function write(result) {
-        var out = path.join(options.basePath, options.flatten === true ? path
-            .basename(result.name) : result.name);
-        grunt.verbose.writeln('instrument to ' + out);
-        grunt.file.mkdir(path.dirname(out));
-        fs.writeFile(out, result.code, 'utf8', this.async(as(1)));
-      }, function end() {
-        flowEnd(this.err, this.next.bind(this));
-      });
+      var outFile = function(file) {
+        return path.join(options.basePath, options.flatten === true ? path.basename(file) : file);
+      };
+
+      var instFlow = flow(function readFile(f) {
+          fs.readFile(f.name, 'utf8', this.async({
+            name : f.name,
+            code : as(1)
+          }));
+        }, function instrument(f) {
+          grunt.verbose.writeln('instrument from ' + f.name);
+          var instrumenter = new istanbul.Instrumenter(options);
+          instrumenter.instrument(f.code, f.name, this.async({
+            name : f.name,
+            code : as(1)
+          }));
+        }, function write(result) {
+          var out = outFile(result.name);
+          grunt.verbose.writeln('instrument to ' + out);
+          grunt.file.mkdir(path.dirname(out));
+          fs.writeFile(out, result.code, 'utf8', this.async(as(1)));
+        }, function end() {
+          flowEnd(this.err, this.next.bind(this));
+        });
+
+     var dateCheckFlow = flow(function checkDestExists(f) {
+         grunt.verbose.writeln('checking destination exists ' + f.name);
+         fs.exists(outFile(f.name), this.async({ name : f.name, exists : as(0) }));
+       },
+       function readStat(f) {
+         if (f.exists) {
+           grunt.verbose.writeln('reading stat for ' + f.name);
+           fs.stat(f.name, this.async({ name : f.name, stat : as(1) }));
+           fs.stat(outFile(f.name), this.async({ name : f.name, stat : as(1) }));
+         } else {
+           grunt.verbose.writeln('instrumented file does not exist ' + f.name);
+           this.end({ name : f.name, instrument : true });
+         }
+       }, function decision(i, o) {
+         var reinstrument = i.stat.mtime.getTime() > o.stat.mtime.getTime();
+         grunt.verbose.writeln('make a decision about instrumenting ' + i.name + ': ' + reinstrument);
+         this.end({ name: i.name, instrument: reinstrument });
+       }, function end(f) {
+         if (this.err) {
+           grunt.verbose.writeln('about to instrument?', this.err);
+         }
+         if (f.instrument) this.exec(instFlow, { name : f.name }, this.async());
+       });
+
       flow(function(filelist) {
         this.asyncEach(filelist, function(file, group) {
-          this.exec(instFlow, file, group.async(as(1)));
+          this.exec((options.lazy ? dateCheckFlow : instFlow), { name : file }, group.async(as(1)));
         });
       }, done)(files);
     },
