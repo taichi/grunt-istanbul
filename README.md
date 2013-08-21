@@ -3,7 +3,7 @@
 JavaScript codecoverage tool for Grunt
 
 ## Getting Started
-This plugin requires Grunt ~0.4.0
+This plugin requires Grunt ~0.4.1
 
 Install this grunt plugin next to your project's [Gruntfile.js][getting_started] with: `npm install grunt-istanbul`
 
