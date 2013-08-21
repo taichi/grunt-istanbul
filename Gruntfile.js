@@ -37,6 +37,7 @@ module.exports = function(grunt) {
     instrument : {
       files : tasks,
       options : {
+        lazy : true,
         basePath : 'build/instrument/'
       }
     },
