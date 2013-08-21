@@ -34,7 +34,7 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "istanbul" : "~0.1.32",
+    "istanbul" : "~0.1.43",
     "nue": "0.7.0dev"
   },
   "peerDependencies": {
