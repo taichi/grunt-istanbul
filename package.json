@@ -8,6 +8,10 @@
     "email": "ryushi@gmail.com",
     "url": "https://twitter.com/ryushi"
   },
+  "contributors": [
+    "Matthew Andrews <matthew@andrews.eu.com>",
+    "Ryan Miller <rmiller@marinsoftware.com>"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/taichi/grunt-istanbul.git"
