@@ -98,6 +98,8 @@ exports.init = function(grunt) {
         }, function end(f) {
           if (f.instrument) {
             this.exec(instFlow, { name : f.name }, this.async());
+          } else {
+            flowEnd(this.err, this.next.bind(this));
           }
         });
 
