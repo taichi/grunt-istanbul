@@ -1,7 +1,7 @@
 {
   "name": "grunt-istanbul",
   "description": "JavaScript codecoverage tool for Grunt",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "homepage": "https://github.com/taichi/grunt-istanbul",
   "author": {
     "name": "taichi",
@@ -35,7 +35,7 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "istanbul" : "~0.1.43",
+    "istanbul" : "~0.2.3",
     "nue": "0.7.0dev"
   },
   "peerDependencies": {
