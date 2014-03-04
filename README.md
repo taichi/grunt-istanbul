@@ -17,7 +17,76 @@ grunt.loadNpmTasks('grunt-istanbul');
 [getting_started]: https://github.com/cowboy/grunt/blob/master/docs/getting_started.md
 
 ## Documentation
-see [Gruntfile.js](https://github.com/taichi/grunt-istanbul/blob/master/Gruntfile.js#69)
+To use this grunt-istanbul plugin, register a grunt task to run the following:
+
+1. Instrument your source code
+2. Run your test suite against your instrumented source code
+3. Store your coverage results
+4. Make the report
+
+For step 2, an environment variable can be used to determine which path to use for loading
+the source code to run the tests against. For example, when you normally run your tests you
+want them to point directly at your source code. But when you run your instanbul code coverage
+task you want your tests to point at your instrumented source code. The `grunt-env` plugin
+can be used for setting an environment variable in a grunt task. Here's an example solution
+that solves this problem using `grunt-env` and `grunt-mocha-test`:
+
+```javascript
+// in Gruntfile.js
+module.exports = function (grunt) {
+
+  grunt.initConfig({
+    env: {
+      coverage: {
+        APP_DIR_FOR_CODE_COVERAGE: '../test/coverage/instrument/app/'
+      }
+    },
+    instrument: {
+      files: 'app/*.js',
+      options: {
+        lazy: true,
+        basePath: 'test/coverage/instrument/'
+      }
+    },
+    mochaTest: {
+      options: {
+        reporter: 'spec'
+      },
+      src: ['test/*.js']
+    },
+    storeCoverage: {
+      options: {
+        dir: 'test/coverage/reports'
+      }
+    },
+    makeReport: {
+      src: 'test/coverage/reports/**/*.json',
+      options: {
+        type: 'lcov',
+        dir: 'test/coverage/reports',
+        print: 'detail'
+      }
+    }
+  });
+
+  grunt.registerTask('coverage', ['env:coverage', 'instrument', 'mochaTest',
+    'storeCoverage', 'makeReport']);
+};
+
+
+// require_helper.js
+module.exports = function (path) {
+  return require((process.env.APP_DIR_FOR_CODE_COVERAGE || '../app/') + path);
+};
+
+// using requireHelper in a test
+var requireHelper = require('../require_helper');
+var formValidator = requireHelper('form_validator');
+```
+
+Also, checkout the example Gruntfile.js in this repo (note that you do not need to implement the
+`reloadTasks` task in this example):
+[Gruntfile.js](https://github.com/taichi/grunt-istanbul/blob/master/Gruntfile.js#69)
 
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [grunt][grunt].
@@ -26,5 +95,5 @@ In lieu of a formal styleguide, take care to maintain the existing coding style.
 _(Nothing yet)_
 
 ## License
-Copyright (c) 2012 taichi  
+Copyright (c) 2012 taichi
 Licensed under the MIT license.
