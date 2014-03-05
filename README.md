@@ -88,6 +88,11 @@ Also, checkout the example Gruntfile.js in this repo (note that you do not need 
 `reloadTasks` task in this example):
 [Gruntfile.js](https://github.com/taichi/grunt-istanbul/blob/master/Gruntfile.js#69)
 
+### more examples
+
+* [Testing and Code Coverage With Node.js Apps](http://www.gregjopa.com/2014/02/testing-and-code-coverage-with-node-js-apps/)
+    * [gregjopa/express-app-testing-demo](https://github.com/gregjopa/express-app-testing-demo)
+
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [grunt][grunt].
 
