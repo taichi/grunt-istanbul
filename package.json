@@ -36,7 +36,7 @@
   },
   "dependencies": {
     "istanbul" : "~0.2.3",
-    "nue": "0.7.0dev"
+    "nue": "0.7.0-dev"
   },
   "peerDependencies": {
     "grunt": "~0.4.1"
