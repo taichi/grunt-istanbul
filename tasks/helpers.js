@@ -35,7 +35,14 @@ exports.init = function(grunt) {
       }
     };
 
-    append(options.type);
+    if (options.type instanceof Array) {
+      options.type.forEach(function(n) {
+        append(n);
+      })
+    }
+    else {
+      append(options.type);
+    }
 
     var mapping = {
       'none' : [],
