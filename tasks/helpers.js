@@ -36,7 +36,7 @@ exports.init = function(grunt) {
     };
 
     if (Array.isArray(options.type)) {
-      options.type.forEach(append)
+      options.type.forEach(append);
     } else {
       append(options.type);
     }
