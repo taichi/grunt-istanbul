@@ -35,12 +35,9 @@ exports.init = function(grunt) {
       }
     };
 
-    if (options.type instanceof Array) {
-      options.type.forEach(function(n) {
-        append(n);
-      })
-    }
-    else {
+    if (Array.isArray(options.type)) {
+      options.type.forEach(append)
+    } else {
       append(options.type);
     }
 
