@@ -13,7 +13,7 @@ exports.init = function(grunt) {
     if (err) {
       grunt.fail.fatal(err);
     } else {
-      grunt.log.ok();
+      grunt.verbose.ok();
     }
     done();
   }
