@@ -19,7 +19,6 @@ module.exports = function(grunt) {
               basePath : 'build/instrument/',
               flatten : false
             });
-            grunt.verbose.writeflags(options, 'Options');
             helper.instrument(grunt.file.expand(files), options, this
                 .async());
           });
@@ -41,7 +40,6 @@ module.exports = function(grunt) {
       json : 'coverage.json',
       coverageVar : '__coverage__'
     });
-    grunt.verbose.writeflags(options, 'Options');
     if (global[options.coverageVar]) {
       helper.storeCoverage(global[options.coverageVar], options, this.async());
     } else {
@@ -59,7 +57,6 @@ module.exports = function(grunt) {
       dir : 'build/reports/',
       print : 'none'
     });
-    grunt.verbose.writeflags(options, 'Options');
     helper.makeReport(grunt.file.expand(files), options, this.async());
   });
 };
