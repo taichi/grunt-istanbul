@@ -77,12 +77,9 @@ exports.init = function(grunt) {
           flowEnd(this.err, this.next.bind(this));
         });
 
-      var dateCheckFlow = flow(function checkDestExists(f) {
-          grunt.verbose.writeln('checking destination exists ' + f.name);
-          fs.exists(outFile(f.name), this.async({ name : f.name, exists : as(0) }));
-        },
+      var dateCheckFlow = flow(
         function readStat(f) {
-          if (f.exists) {
+          if (grunt.file.exists(f.name)) {
             grunt.verbose.writeln('reading stat for ' + f.name);
             fs.stat(f.name, this.async({ name : f.name, stat : as(1) }));
             fs.stat(outFile(f.name), this.async({ name : f.name, stat : as(1) }));
