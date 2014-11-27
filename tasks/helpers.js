@@ -1,6 +1,8 @@
 exports.init = function(grunt) {
   'use strict';
 
+  var chalk = require('chalk');
+
   var fs = require('fs');
   var path = require('path');
 
@@ -61,6 +63,8 @@ exports.init = function(grunt) {
         return path.join(options.basePath, options.flatten === true ? path.basename(file) : file);
       };
 
+      var tally = { instrumented : 0, skipped : 0 };
+
       var instFlow = flow(
         function instrumentFile(f) {
           var code = grunt.file.read(f.name);
@@ -72,6 +76,7 @@ exports.init = function(grunt) {
         }, function write(result) {
           var out = outFile(result.name);
           grunt.file.write(out, result.code);
+          tally.instrumented++;
           this.next();
         }, function end() {
           flowEnd(this.err, this.next.bind(this));
@@ -95,6 +100,7 @@ exports.init = function(grunt) {
           if (f.instrument) {
             this.exec(instFlow, { name : f.name }, this.async());
           } else {
+            tally.skipped++;
             flowEnd(this.err, this.next.bind(this));
           }
         });
@@ -103,6 +109,15 @@ exports.init = function(grunt) {
         this.asyncEach(filelist, function(file, group) {
           this.exec((options.lazy ? dateCheckFlow : instFlow), { name : file }, group.async(as(1)));
         });
+      }, function outputSummary() {
+        grunt.log.write('Instrumented ' + chalk.cyan(tally.instrumented) + ' ' +
+                        grunt.util.pluralize(tally.instrumented, 'file/files'));
+        if (options.lazy) {
+          grunt.log.write(' (skipped ' + chalk.cyan(tally.skipped) + ' ' +
+                          grunt.util.pluralize(tally.skipped, 'file/files') + ')');
+        }
+        grunt.log.writeln();
+        this.next();
       }, done)(files);
     },
     storeCoverage : function(coverage, options, done) {
