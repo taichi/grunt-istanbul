@@ -61,15 +61,11 @@ exports.init = function(grunt) {
         return path.join(options.basePath, options.flatten === true ? path.basename(file) : file);
       };
 
-      var instFlow = flow(function readFile(f) {
-          fs.readFile(f.name, 'utf8', this.async({
-            name : f.name,
-            code : as(1)
-          }));
-        }, function instrument(f) {
-          grunt.verbose.writeln('instrument from ' + f.name);
+      var instFlow = flow(
+        function instrumentFile(f) {
+          var code = grunt.file.read(f.name);
           var instrumenter = new istanbul.Instrumenter(options);
-          instrumenter.instrument(f.code, f.name, this.async({
+          instrumenter.instrument(code, f.name, this.async({
             name : f.name,
             code : as(1)
           }));
