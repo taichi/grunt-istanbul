@@ -14,8 +14,6 @@ exports.init = function(grunt) {
   function flowEnd(err, done) {
     if (err) {
       grunt.fail.fatal(err);
-    } else {
-      grunt.verbose.ok();
     }
     done();
   }
