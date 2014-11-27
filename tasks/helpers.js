@@ -123,8 +123,8 @@ exports.init = function(grunt) {
     storeCoverage : function(coverage, options, done) {
       flow(function write_json(cov) {
         var json = path.resolve(options.dir, options.json);
-        grunt.file.mkdir(path.dirname(json));
-        fs.writeFile(json, JSON.stringify(cov), 'utf8', this.async(as(1)));
+        grunt.file.write(json, JSON.stringify(cov));
+        this.next();
       }, function() {
         flowEnd(this.err, done);
       })(coverage);
