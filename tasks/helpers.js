@@ -80,7 +80,7 @@ exports.init = function(grunt) {
       var dateCheckFlow = flow(
         function readStat(f) {
           if (grunt.file.exists(f.name)) {
-            grunt.verbose.writeln('reading stat for ' + f.name);
+            grunt.log.debug('reading stat for ' + f.name);
             fs.stat(f.name, this.async({ name : f.name, stat : as(1) }));
             fs.stat(outFile(f.name), this.async({ name : f.name, stat : as(1) }));
           } else {
@@ -89,7 +89,7 @@ exports.init = function(grunt) {
           }
         }, function decision(i, o) {
           var reinstrument = i.stat.mtime.getTime() > o.stat.mtime.getTime();
-          grunt.verbose.writeln('make a decision about instrumenting ' + i.name + ': ' + reinstrument);
+          grunt.log.debug('make a decision about instrumenting ' + i.name + ': ' + reinstrument);
           this.end({ name: i.name, instrument: reinstrument });
         }, function end(f) {
           if (f.instrument) {
