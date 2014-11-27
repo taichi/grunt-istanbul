@@ -131,14 +131,9 @@ exports.init = function(grunt) {
     },
     makeReport : function(files, options, done) {
       flow(function(filelist) {
-        this.asyncEach(filelist, function(file, group) {
-          grunt.verbose.writeln('read from ' + file);
-          fs.readFile(file, 'utf8', group.async(as(1)));
-        });
-      }, function report(list) {
         var collector = new istanbul.Collector();
-        list.forEach(function(json) {
-          collector.add(JSON.parse(json));
+        filelist.forEach(function(file) {
+          collector.add(grunt.file.readJSON(file));
         });
         makeReporters(options).forEach(function(repoDef) {
             var reporter = istanbul.Report.create(repoDef.type, repoDef.options);
