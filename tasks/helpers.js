@@ -71,9 +71,8 @@ exports.init = function(grunt) {
           }));
         }, function write(result) {
           var out = outFile(result.name);
-          grunt.verbose.writeln('instrument to ' + out);
-          grunt.file.mkdir(path.dirname(out));
-          fs.writeFile(out, result.code, 'utf8', this.async(as(1)));
+          grunt.file.write(out, result.code);
+          this.next();
         }, function end() {
           flowEnd(this.err, this.next.bind(this));
         });
