@@ -1,6 +1,8 @@
 exports.init = function(grunt) {
   'use strict';
 
+  var chalk = require('chalk');
+
   var fs = require('fs');
   var path = require('path');
 
@@ -12,8 +14,6 @@ exports.init = function(grunt) {
   function flowEnd(err, done) {
     if (err) {
       grunt.fail.fatal(err);
-    } else {
-      grunt.log.ok();
     }
     done();
   }
@@ -61,34 +61,29 @@ exports.init = function(grunt) {
         return path.join(options.basePath, options.flatten === true ? path.basename(file) : file);
       };
 
-      var instFlow = flow(function readFile(f) {
-          fs.readFile(f.name, 'utf8', this.async({
-            name : f.name,
-            code : as(1)
-          }));
-        }, function instrument(f) {
-          grunt.verbose.writeln('instrument from ' + f.name);
+      var tally = { instrumented : 0, skipped : 0 };
+
+      var instFlow = flow(
+        function instrumentFile(f) {
+          var code = grunt.file.read(f.name);
           var instrumenter = new istanbul.Instrumenter(options);
-          instrumenter.instrument(f.code, f.name, this.async({
+          instrumenter.instrument(code, f.name, this.async({
             name : f.name,
             code : as(1)
           }));
         }, function write(result) {
           var out = outFile(result.name);
-          grunt.verbose.writeln('instrument to ' + out);
-          grunt.file.mkdir(path.dirname(out));
-          fs.writeFile(out, result.code, 'utf8', this.async(as(1)));
+          grunt.file.write(out, result.code);
+          tally.instrumented++;
+          this.next();
         }, function end() {
           flowEnd(this.err, this.next.bind(this));
         });
 
-      var dateCheckFlow = flow(function checkDestExists(f) {
-          grunt.verbose.writeln('checking destination exists ' + f.name);
-          fs.exists(outFile(f.name), this.async({ name : f.name, exists : as(0) }));
-        },
+      var dateCheckFlow = flow(
         function readStat(f) {
-          if (f.exists) {
-            grunt.verbose.writeln('reading stat for ' + f.name);
+          if (grunt.file.exists(f.name)) {
+            grunt.log.debug('reading stat for ' + f.name);
             fs.stat(f.name, this.async({ name : f.name, stat : as(1) }));
             fs.stat(outFile(f.name), this.async({ name : f.name, stat : as(1) }));
           } else {
@@ -97,12 +92,13 @@ exports.init = function(grunt) {
           }
         }, function decision(i, o) {
           var reinstrument = i.stat.mtime.getTime() > o.stat.mtime.getTime();
-          grunt.verbose.writeln('make a decision about instrumenting ' + i.name + ': ' + reinstrument);
+          grunt.log.debug('make a decision about instrumenting ' + i.name + ': ' + reinstrument);
           this.end({ name: i.name, instrument: reinstrument });
         }, function end(f) {
           if (f.instrument) {
             this.exec(instFlow, { name : f.name }, this.async());
           } else {
+            tally.skipped++;
             flowEnd(this.err, this.next.bind(this));
           }
         });
@@ -111,27 +107,31 @@ exports.init = function(grunt) {
         this.asyncEach(filelist, function(file, group) {
           this.exec((options.lazy ? dateCheckFlow : instFlow), { name : file }, group.async(as(1)));
         });
+      }, function outputSummary() {
+        grunt.log.write('Instrumented ' + chalk.cyan(tally.instrumented) + ' ' +
+                        grunt.util.pluralize(tally.instrumented, 'file/files'));
+        if (options.lazy) {
+          grunt.log.write(' (skipped ' + chalk.cyan(tally.skipped) + ' ' +
+                          grunt.util.pluralize(tally.skipped, 'file/files') + ')');
+        }
+        grunt.log.writeln();
+        this.next();
       }, done)(files);
     },
     storeCoverage : function(coverage, options, done) {
       flow(function write_json(cov) {
         var json = path.resolve(options.dir, options.json);
-        grunt.file.mkdir(path.dirname(json));
-        fs.writeFile(json, JSON.stringify(cov), 'utf8', this.async(as(1)));
+        grunt.file.write(json, JSON.stringify(cov));
+        this.next();
       }, function() {
         flowEnd(this.err, done);
       })(coverage);
     },
     makeReport : function(files, options, done) {
       flow(function(filelist) {
-        this.asyncEach(filelist, function(file, group) {
-          grunt.verbose.writeln('read from ' + file);
-          fs.readFile(file, 'utf8', group.async(as(1)));
-        });
-      }, function report(list) {
         var collector = new istanbul.Collector();
-        list.forEach(function(json) {
-          collector.add(JSON.parse(json));
+        filelist.forEach(function(file) {
+          collector.add(grunt.file.readJSON(file));
         });
         makeReporters(options).forEach(function(repoDef) {
             var reporter = istanbul.Report.create(repoDef.type, repoDef.options);

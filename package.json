@@ -35,6 +35,7 @@
     "test": "grunt test"
   },
   "dependencies": {
+    "chalk": "~0.5.1",
     "istanbul" : "~0.2.3",
     "nue": "0.7.0-dev"
   },
