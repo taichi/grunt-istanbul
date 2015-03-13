@@ -38,7 +38,7 @@
   "dependencies": {
     "chalk": "~0.5.1",
     "istanbul" : "~0.2.3",
-    "nue": "0.7.0-dev"
+    "nue": "~0.6.0"
   },
   "peerDependencies": {
     "grunt": "~0.4.5"
