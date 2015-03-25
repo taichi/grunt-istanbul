@@ -66,7 +66,7 @@ exports.init = function(grunt) {
       var instFlow = flow(
         function instrumentFile(f) {
           var code = grunt.file.read(f.name);
-          var instrumenter = new istanbul.Instrumenter(options);
+          var instrumenter = options.instrumenter ? new options.instrumenter(options) : new istanbul.Instrumenter(options);
           instrumenter.instrument(code, f.name, this.async({
             name : f.name,
             code : as(1)

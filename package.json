@@ -48,6 +48,7 @@
     "grunt-contrib-jshint": "~0.11.0",
     "grunt-contrib-nodeunit": "~0.4.1",
     "grunt-contrib-clean" : "~0.6.0",
+    "isparta": "^2.2.0",
     "mkdirp": "~0.5.0",
     "rimraf": "~2.3.2",
     "dateformat" : "~1.0.11"
