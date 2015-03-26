@@ -84,6 +84,27 @@ var requireHelper = require('../require_helper');
 var formValidator = requireHelper('form_validator');
 ```
 
+You can also pass an `instrumenter` argument to the instrument `options` as well as any other arguments that your instrumenter takes.
+
+```javascript
+// in Gruntfile.js
+module.exports = function (grunt) {
+ var isparta = require('isparta');
+  grunt.initConfig({
+    instrument: {
+      files: 'app/*.es6',
+      options: {
+        lazy: true,
+        basePath: 'test/coverage/instrument/'
+        babel: {ignore: false, experimental: true, extensions: ['.es6']},
+        instrumenter: isparta.Instrumenter
+      }
+    }
+  });
+};
+
+```
+
 Also, checkout the example Gruntfile.js in this repo (note that you do not need to implement the
 `reloadTasks` task in this example):
 [Gruntfile.js](https://github.com/taichi/grunt-istanbul/blob/master/Gruntfile.js#69)
