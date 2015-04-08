@@ -72,13 +72,14 @@ module.exports = function (grunt) {
   grunt.registerTask('coverage', ['env:coverage', 'instrument', 'mochaTest',
     'storeCoverage', 'makeReport']);
 };
-
-
+```
+```javascript
 // require_helper.js
 module.exports = function (path) {
   return require((process.env.APP_DIR_FOR_CODE_COVERAGE || '../app/') + path);
 };
-
+```
+```javascript
 // using requireHelper in a test
 var requireHelper = require('../require_helper');
 var formValidator = requireHelper('form_validator');
