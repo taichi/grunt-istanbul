@@ -106,7 +106,7 @@ module.exports = function (grunt) {
 
 ```
 
-If you want to specify a current working directory, you can use the 'cwd' option :
+If you want to specify a current working directory, you can specify a path the cwd `options` :
 
 ```javascript
 // in Gruntfile.js
