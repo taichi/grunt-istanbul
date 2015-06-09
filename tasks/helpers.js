@@ -61,13 +61,19 @@ exports.init = function(grunt) {
         return path.join(options.basePath, options.flatten === true ? path.basename(file) : file);
       };
 
+      var getRelativePath = function (file) {
+        var cwd = options.cwd || '';
+
+        return path.join(cwd, file);
+      };
+
       var tally = { instrumented : 0, skipped : 0 };
 
       var instFlow = flow(
         function instrumentFile(f) {
-          var code = grunt.file.read(f.name);
+          var code = grunt.file.read(getRelativePath(f.name));
           var instrumenter = options.instrumenter ? new options.instrumenter(options) : new istanbul.Instrumenter(options);
-          instrumenter.instrument(code, f.name, this.async({
+          instrumenter.instrument(code, getRelativePath(f.name), this.async({
             name : f.name,
             code : as(1)
           }));
