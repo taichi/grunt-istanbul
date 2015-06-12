@@ -106,6 +106,29 @@ module.exports = function (grunt) {
 
 ```
 
+If you want to specify a current working directory, you can specify a path the cwd `options` :
+
+```javascript
+// in Gruntfile.js
+module.exports = function (grunt) {
+ var isparta = require('isparta');
+  grunt.initConfig({
+    instrument: {
+      files: '**/*.es6',
+      options: {
+        cwd: 'app/'
+        lazy: true,
+        basePath: 'test/coverage/instrument/'
+        babel: {ignore: false, experimental: true, extensions: ['.es6']}
+      }
+    }
+  });
+};
+
+```
+
+
+
 Also, checkout the example Gruntfile.js in this repo (note that you do not need to implement the
 `reloadTasks` task in this example):
 [Gruntfile.js](https://github.com/taichi/grunt-istanbul/blob/master/Gruntfile.js#69)

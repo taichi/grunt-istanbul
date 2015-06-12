@@ -19,7 +19,10 @@ module.exports = function(grunt) {
               basePath : 'build/instrument/',
               flatten : false
             });
-            helper.instrument(grunt.file.expand(files), options, this
+
+            var expandOptions = options.cwd ? {cwd: options.cwd} : {};
+
+            helper.instrument(grunt.file.expand(expandOptions, files), options, this
                 .async());
           });
 
