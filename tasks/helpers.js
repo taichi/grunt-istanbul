@@ -88,9 +88,9 @@ exports.init = function(grunt) {
 
       var dateCheckFlow = flow(
         function readStat(f) {
-          if (grunt.file.exists(f.name) && grunt.file.exists(outFile(f.name))) {
+          if (grunt.file.exists(getRelativePath(f.name)) && grunt.file.exists(outFile(f.name))) {
             grunt.log.debug('reading stat for ' + f.name);
-            fs.stat(f.name, this.async({ name : f.name, stat : as(1) }));
+            fs.stat(getRelativePath(f.name), this.async({ name : f.name, stat : as(1) }));
             fs.stat(outFile(f.name), this.async({ name : f.name, stat : as(1) }));
           } else {
             grunt.verbose.writeln('instrumented file does not exist ' + f.name);
