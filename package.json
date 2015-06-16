@@ -1,7 +1,7 @@
 {
   "name": "grunt-istanbul",
   "description": "JavaScript codecoverage tool for Grunt",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "homepage": "https://github.com/taichi/grunt-istanbul",
   "author": {
     "name": "taichi",
