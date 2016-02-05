@@ -22,8 +22,9 @@ module.exports = function(grunt) {
 
             var expandOptions = options.cwd ? {cwd: options.cwd} : {};
 
-            helper.instrument(grunt.file.expand(expandOptions, files), options, this
-                .async());
+             var allFiles = grunt.file.expand(expandOptions, files);
+             global['allFiles'] = allFiles;
+             helper.instrument(allFiles, options, this.async());
           });
 
   grunt.registerTask('reloadTasks', 'override instrumented tasks', function(
@@ -44,6 +45,9 @@ module.exports = function(grunt) {
       coverageVar : '__coverage__'
     });
     if (global[options.coverageVar]) {
+      if (options["include-all-sources"]) {
+        helper.addUncoveredFiles(global[options.coverageVar], options, global['allFiles']);
+      }
       helper.storeCoverage(global[options.coverageVar], options, this.async());
     } else {
       grunt.fail.fatal('No coverage information was collected');
