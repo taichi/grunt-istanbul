@@ -38,8 +38,8 @@
     "test": "grunt test"
   },
   "dependencies": {
-    "chalk": "~1.0.0",
-    "istanbul" : "~0.3.7",
+    "chalk": "1.1.1",
+    "istanbul" : "0.4.2",
     "nue": "0.7.1"
   },
   "peerDependencies": {
@@ -47,13 +47,13 @@
   },
   "devDependencies": {
     "grunt": "~0.4.5",
-    "grunt-contrib-jshint": "~0.11.0",
+    "grunt-contrib-jshint": "~0.12.0",
     "grunt-contrib-nodeunit": "~0.4.1",
-    "grunt-contrib-clean" : "~0.6.0",
+    "grunt-contrib-clean" : "~0.7.0",
     "isparta": "^2.2.0",
-    "mkdirp": "~0.5.0",
-    "rimraf": "~2.3.2",
-    "dateformat" : "~1.0.11"
+    "mkdirp": "~0.5.1",
+    "rimraf": "~2.5.1",
+    "dateformat" : "~1.0.12"
   },
   "keywords": [
     "gruntplugin","coverage","code coverage", "JS code coverage", "JS coverage","istanbul"
