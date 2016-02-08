@@ -125,6 +125,16 @@ exports.init = function(grunt) {
         this.next();
       }, done)(files);
     },
+    addUncoveredFiles: function(coverage, options, allFiles){
+      var instrumenter = new istanbul.Instrumenter({coverageVariable: options.coverageVar , preserveComments: false});
+      var transformer = instrumenter.instrumentSync.bind(instrumenter);
+      allFiles.forEach(function (file) {
+        if (!coverage[file]) {
+          transformer(fs.readFileSync(file, 'utf-8'), file);
+          coverage[file] = instrumenter.coverState;
+        }
+      });
+    },
     storeCoverage : function(coverage, options, done) {
       flow(function write_json(cov) {
         var json = path.resolve(options.dir, options.json);
