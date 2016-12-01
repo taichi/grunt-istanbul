@@ -8,6 +8,7 @@
 module.exports = function(grunt) {
   'use strict';
 
+  var path = require('path');
   var helper = require('./helpers').init(grunt);
   grunt
       .registerTask('instrument', 'instruments a file or a directory tree',
@@ -22,9 +23,9 @@ module.exports = function(grunt) {
 
             var expandOptions = options.cwd ? {cwd: options.cwd} : {};
 
-             var allFiles = grunt.file.expand(expandOptions, files);
-             global['allFiles'] = allFiles;
-             helper.instrument(allFiles, options, this.async());
+            var allFiles = grunt.file.expand(expandOptions, files).map(path.normalize);
+            global['allFiles'] = allFiles;
+            helper.instrument(allFiles, options, this.async());
           });
 
   grunt.registerTask('reloadTasks', 'override instrumented tasks', function(
