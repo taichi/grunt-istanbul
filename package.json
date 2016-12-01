@@ -1,7 +1,7 @@
 {
   "name": "grunt-istanbul",
   "description": "JavaScript codecoverage tool for Grunt",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "homepage": "https://github.com/taichi/grunt-istanbul",
   "author": {
     "name": "taichi",
@@ -15,7 +15,8 @@
     "Martin Geisler <martin@geisler.net>",
     "Seth Pollack <spollack@qualitybath.com>",
     "tcrevoisier <thomas.crevoisier.sfeir@ext.pmu.com>",
-    "yeahoffline <frank.gasser@gmail.com>"
+    "yeahoffline <frank.gasser@gmail.com>",
+    "Matt Giles <matt.giles@cerner.com>"
   ],
   "repository": {
     "type": "git",
