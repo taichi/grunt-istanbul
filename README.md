@@ -127,7 +127,7 @@ module.exports = function (grunt) {
 
 ```
 
-To see all instrumented files reguardless of coverage you can init the `storeCoverage` task as follows:
+To see all instrumented files ( even if they are not covered ) you can init the `storeCoverage` task as follows:
 ```
   grunt.initConfig({
     storeCoverage: {
