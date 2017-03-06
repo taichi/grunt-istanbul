@@ -127,6 +127,18 @@ module.exports = function (grunt) {
 
 ```
 
+By default only files that have coverage are stored. When the 'include-all-sources' option is set to true it will show all instrumented files even if their coverage percentage is 0. To see all instrumented files you can init the `storeCoverage` task as follows:
+```javascript
+grunt.initConfig({
+  storeCoverage: {
+    options: {
+      dir: 'test/coverage/reports',
+      'include-all-sources': true
+    }
+  }
+});
+```
+
 
 
 Also, checkout the example Gruntfile.js in this repo (note that you do not need to implement the
