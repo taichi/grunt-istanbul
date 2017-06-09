@@ -26,9 +26,7 @@ module.exports = function(grunt) {
         return;
       }
 
-      var expandOptions = options.cwd ? {
-        cwd: options.cwd
-      } : {};
+      var expandOptions = options.cwd ? {cwd: options.cwd} : {};
 
       var allFiles = grunt.file.expand(expandOptions, files).map(path.normalize);
       global['allFiles'] = (global['allFiles'] || []).concat(allFiles);
