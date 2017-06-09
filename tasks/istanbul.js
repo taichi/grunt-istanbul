@@ -37,7 +37,7 @@ module.exports = function(grunt) {
     });
 
   grunt.registerTask('reloadTasks', 'override instrumented tasks', function(
-    target) {
+      target) {
     var key = 'reloadTasks.rootPath';
     this.requiresConfig(key);
     var path = grunt.config(key);
@@ -46,14 +46,15 @@ module.exports = function(grunt) {
     grunt.log.ok();
   });
 
-  grunt.registerTask('storeCoverage', 'store coverage from global', function() {
+  grunt.registerTask('storeCoverage', 'store coverage from global', function(
+      target) {
     var options = this.options({
-      dir: 'build/reports/',
-      json: 'coverage.json',
-      coverageVar: '__coverage__'
+      dir : 'build/reports/',
+      json : 'coverage.json',
+      coverageVar : '__coverage__'
     });
     if (global[options.coverageVar]) {
-      if (options['include-all-sources']) {
+      if (options["include-all-sources"]) {
         helper.addUncoveredFiles(global[options.coverageVar], options, global['allFiles']);
       }
       helper.storeCoverage(global[options.coverageVar], options, this.async());
@@ -67,10 +68,10 @@ module.exports = function(grunt) {
     this.requiresConfig(key);
     var files = grunt.config(key);
     var options = this.options({
-      reporters: {},
-      type: 'lcov',
-      dir: 'build/reports/',
-      print: 'none'
+      reporters : {},
+      type : 'lcov',
+      dir : 'build/reports/',
+      print : 'none'
     });
     helper.makeReport(grunt.file.expand(files), options, this.async());
   });
