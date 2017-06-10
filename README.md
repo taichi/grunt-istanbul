@@ -126,6 +126,66 @@ module.exports = function (grunt) {
 };
 
 ```
+If you wan to insturment multiple locations, you specify multiple task targets:
+
+```javascript
+// in Gruntfile.js
+module.exports = function (grunt) {
+
+  grunt.initConfig({
+    env: {
+      coverage: {
+        APP_DIR_FOR_CODE_COVERAGE: '../test/coverage/instrument/app/'
+      }
+    },
+    instrument: {
+      api: {
+        files: 'app/*.js',
+        options: {
+          basePath: 'test/coverage/instrument/'
+        }
+      },
+      web: {
+        files: 'web/*.js',
+        options: {
+          basePath: 'test/coverage/instrument/'
+        }
+      }
+    },
+    mochaTest: {
+      options: {
+        reporter: 'spec'
+      },
+      src: ['test/*.js']
+    },
+    storeCoverage: {
+      options: {
+        dir: 'test/coverage/reports'
+      }
+    },
+    makeReport: {
+      src: 'test/coverage/reports/**/*.json',
+      options: {
+        type: 'lcov',
+        dir: 'test/coverage/reports',
+        print: 'detail'
+      }
+    }
+  });
+
+  grunt.grunt.registerTask('coverage', function(arg) {
+    var insturment = arg ? 'insturment:' + arg : 'insturment';
+    
+    grunt.task.run(['env:coverage', instrument, 'mochaTest',
+      'storeCoverage', 'makeReport']);
+  });
+```
+```bash
+> grunt coverage
+> grunt coverage:api
+> grunt coverage:web
+```
+
 
 By default only files that have coverage are stored. When the 'include-all-sources' option is set to true it will show all instrumented files even if their coverage percentage is 0. To see all instrumented files you can init the `storeCoverage` task as follows:
 ```javascript
