@@ -181,9 +181,12 @@ module.exports = function (grunt) {
   });
 ```
 ```bash
-> grunt coverage
-> grunt coverage:api
-> grunt coverage:web
+# coverage with api and web insturmentation
+$ grunt coverage
+# coverage with api insturmentation
+$ grunt coverage:api
+# coverage with web insturmentation
+$ grunt coverage:web
 ```
 
 
