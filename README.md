@@ -173,7 +173,7 @@ module.exports = function (grunt) {
     }
   });
 
-  grunt.grunt.registerTask('coverage', function(arg) {
+  grunt.registerTask('coverage', function(arg) {
     var insturment = arg ? 'insturment:' + arg : 'insturment';
     
     grunt.task.run(['env:coverage', instrument, 'mochaTest',
