@@ -17,6 +17,13 @@ grunt.loadNpmTasks('grunt-istanbul');
 [getting_started]: https://github.com/cowboy/grunt/blob/master/docs/getting_started.md
 
 ## Documentation
+This grunt plugin uses [Istanbul](https://github.com/gotwarlost/istanbul) to perform the code coverage tasks.
+It provides the following grunt tasks:
+* `instrument`: instruments a file or a directory tree
+* `reloadTasks`: override instrumented tasks
+* `storeCoverage`: store coverage from global
+* `makeReport`: make coverage report
+
 To use this grunt-istanbul plugin, register a grunt task to run the following:
 
 1. Instrument your source code
@@ -207,6 +214,8 @@ grunt.initConfig({
 Also, checkout the example Gruntfile.js in this repo (note that you do not need to implement the
 `reloadTasks` task in this example):
 [Gruntfile.js](https://github.com/taichi/grunt-istanbul/blob/master/Gruntfile.js#69)
+
+For information about the configuration options use the command line `istanbul help config`.
 
 ### more examples
 
